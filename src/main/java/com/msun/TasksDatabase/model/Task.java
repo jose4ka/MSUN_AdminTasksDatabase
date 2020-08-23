@@ -6,10 +6,11 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table
-@ToString(of = {"id", "text"})
+@ToString(of = {"id", "text", "dateCreation"})
 @EqualsAndHashCode(of = {"id"})
 public class Task {
 
@@ -17,6 +18,7 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String text;
+
 
 
     public Long getId() {
