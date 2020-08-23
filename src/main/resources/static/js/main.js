@@ -16,7 +16,12 @@ Vue.component('task-editor', {
     data: function(){
         return{
             text: '',
-            id: ''
+            id: '',
+            dateCreation: '',
+            type: '',
+            owner: '',
+            block: '',
+            phoneNumber: ''
         }
     },
 
@@ -24,18 +29,42 @@ Vue.component('task-editor', {
             taskAttr: function(newVal, oldVal){
                 this.text = newVal.text;
                 this.id = newVal.id;
+                this.dateCreation = newVal.dateCreation;
+                this.type = newVal.type;
+                this.owner = newVal.owner;
+                this.block = newVal.block;
+                this.phoneNumber = newVal.phoneNumber;
+
             }
     },
 
     template:
                 '<div>'+
-                '<input type="text" placeholder="Write something" v-model="text"/>'+
+                '<input type="text" placeholder="Проблема" v-model="text"/>'+
+                '<input type="date" placeholder="Дата создания" v-model="dateCreation"/>'+
+                '<input list="variants" placeholder="Тип" v-model="type"/>'+
+                   '<datalist id="variants">'+
+                    '<option>Интернет</option>'+
+                    '<option>Телефон</option>'+
+                    '<option>Классы</option>'+
+                    '<option>Программы</option>'+
+                   '</datalist>'+
+                '<input type="text" placeholder="Ф.И.О." v-model="owner"/>'+
+                '<input type="text" placeholder="Корпус" v-model="block"/>'+
+                '<input type="text" placeholder="Номер телефона" v-model="phoneNumber"/>'+
                 '<input type="button" value="Save" @click="save"/>'+
                 '</div>',
 
     methods: {
             save: function(){
-                var task = { text: this.text };
+                var task = {
+                 text: this.text,
+                 dateCreation: this.dateCreation,
+                 type: this.type,
+                 owner: this.owner,
+                 block: this.block,
+                 phoneNumber: this.phoneNumber
+                 };
 
 //Если мы передали определённый таск, то изменяем его
                 if(this.id){
@@ -46,6 +75,11 @@ Vue.component('task-editor', {
                             this.tasks.splice(index, 1, data);
                             this.text = ''
                             this.id = ''
+                            this.dateCreation = ''
+                            this.type = ''
+                            this.owner = ''
+                            this.block = ''
+                            this.phoneNumber = ''
                         })
                     )
                 }
@@ -55,6 +89,11 @@ Vue.component('task-editor', {
                     result.json().then(data =>{
                         this.tasks.push(data);
                         this.text = ''
+                        this.dateCreation = ''
+                        this.type = ''
+                        this.owner = ''
+                        this.block = ''
+                        this.phoneNumber = ''
                     })
                 )
                 }
@@ -84,6 +123,11 @@ Vue.component('task-row', {
             '<input type="button" value="X" @click="del" />'+
             '({{task.id}})'+
             '  {{task.text}}  '+
+            '  {{task.dateCreation}}  '+
+            '  {{task.type}}  '+
+            '  {{task.owner}}  '+
+            '  {{task.block}}  '+
+            '  +{{task.phoneNumber}}  '+
     '</span>'+
     '</div>',
 
@@ -120,7 +164,7 @@ Vue.component('tasks-list', {
 
     },
     template:
-    '<div style="position: relative; width: 300px;">'+
+    '<div style="position: relative; width: 1000px;">'+
         '<task-editor :tasks="tasks" :taskAttr="task"/>'+
         '<task-row v-for="task in tasks" :key="task.id" :task="task" :editMethod="editMethod" :tasks="tasks"/>'+
     '</div>',
