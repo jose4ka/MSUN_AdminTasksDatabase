@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table
-@ToString(of = {"id", "text", "dateCreation"})
+@ToString(of = {"id", "text"})
 @EqualsAndHashCode(of = {"id"})
 public class Task {
 
