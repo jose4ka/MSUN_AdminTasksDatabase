@@ -15,55 +15,113 @@ Vue.component('task-editor', {
 
     data: function(){
         return{
-            text: '',
             id: '',
             dateCreation: '',
-            type: '',
+            timeCreation: '',
             owner: '',
+            subdivision: '',
             block: '',
-            phoneNumber: ''
+            cabinet: '',
+            type: '',
+            phoneNumber: '',
+            text: '',
+            performanceStatus: '',
+            datePerformance: '',
+            executors: '',
+            comment: ''
+
         }
     },
 
     watch: {
             taskAttr: function(newVal, oldVal){
-                this.text = newVal.text;
                 this.id = newVal.id;
                 this.dateCreation = newVal.dateCreation;
-                this.type = newVal.type;
+                this.timeCreation = newVal.timeCreation;
                 this.owner = newVal.owner;
+                this.subdivision = newVal.subdivision;
                 this.block = newVal.block;
+                this.cabinet = newVal.cabinet;
+                this.type = newVal.type;
                 this.phoneNumber = newVal.phoneNumber;
+                this.text = newVal.text;
+                this.performanceStatus = newVal.performanceStatus;
+                this.datePerformance = newVal.datePerformance;
+                this.executors = newVal.executors;
+                this.comment = newVal.comment;
 
             }
     },
 
     template:
                 '<div>'+
-                '<input type="text" placeholder="Проблема" v-model="text"/>'+
                 '<input type="date" placeholder="Дата создания" v-model="dateCreation"/>'+
-                '<input list="variants" placeholder="Тип" v-model="type"/>'+
-                   '<datalist id="variants">'+
-                    '<option>Интернет</option>'+
-                    '<option>Телефон</option>'+
-                    '<option>Классы</option>'+
-                    '<option>Программы</option>'+
-                   '</datalist>'+
-                '<input type="text" placeholder="Ф.И.О." v-model="owner"/>'+
-                '<input type="text" placeholder="Корпус" v-model="block"/>'+
-                '<input type="text" placeholder="Номер телефона" v-model="phoneNumber"/>'+
+                '<input type="time" placeholder="Время создания" v-model="timeCreation"/>'+
+                '<input type="text" placeholder="Ф.И.О. заявителя" v-model="owner"/>'+
+                '<input type="text" placeholder="Подразделение" v-model="subdivision" value="СКТУ и ВЭО"/>'+
+
+                '<input list="blocks" placeholder="Корпус" v-model="block"/>'+
+                                    '<datalist id="blocks">'+
+                                      '<option>Корпус №1 (Верхнепортовая 50а)</option>'+
+                                      '<option>Корпус №2 (Верхнепортовая 50б</option>'+
+                                      '<option>Корпус №3 (Станюковича 60а)</option>'+
+                                      '<option>Корпус №5 (Станюковича 58)</option>'+
+                                      '<option>Корпус №6 (Станюковича 66)</option>'+
+                                      '<option>Корпус №7 (Станюковича 64)</option>'+
+                                      '<option>Корпус №8 (Авраменко 16)</option>'+
+                                      '<option>Корпус №9 (Станюковича 62)</option>'+
+                                      '<option>Корпус №10 (Станюковича 62)</option>'+
+                                      '<option>Корпус №12 (Авраменко 9)</option>'+
+                                      '<option>Корпус №14 (Тренажерный комплекс)</option>'+
+                                      '<option>Водная станция (Лейтентанта Шмидта 29)</option>'+
+                                    '</datalist>'+
+
+                '<input type="text" placeholder="Кабинет" v-model="cabinet"/>'+
+
+                '<input list="types" placeholder="Категория" v-model="type"/>'+
+                                   '<datalist id="types">'+
+                                    '<option>Телефония</option>'+
+                                    '<option>Сеть</option>'+
+                                    '<option>Классы</option>'+
+                                    '<option>Программы</option>'+
+                                   '</datalist>'+
+
+                '<input type="text" placeholder="Телефон для связи" v-model="phoneNumber"/>'+
+                '<input type="text" placeholder="Описания проблемы" v-model="text"/>'+
+
+                '<input list="perfStatuses" placeholder="Статус выполнения" v-model="performanceStatus"/>'+
+                                                   '<datalist id="perfStatuses">'+
+                                                    '<option>Принята</option>'+
+                                                    '<option>Выполнена</option>'+
+                                                    '<option>Ожидание</option>'+
+                                                    '<option>Невыполнима</option>'+
+                                                   '</datalist>'+
+
+                '<input type="date" placeholder="Дата выполнения" v-model="datePerformance"/>'+
+                '<input type="text" placeholder="Исполнители" v-model="executors"/>'+
+                '<input type="text" placeholder="Комментарий" v-model="comment"/>'+
+
                 '<input type="button" value="Save" @click="save"/>'+
+                '<input type="button" value="Reset" @click="reset"/>'+
                 '</div>',
 
     methods: {
             save: function(){
                 var task = {
-                 text: this.text,
                  dateCreation: this.dateCreation,
-                 type: this.type,
+                 timeCreation: this.timeCreation,
                  owner: this.owner,
+                 subdivision: this.subdivision,
                  block: this.block,
-                 phoneNumber: this.phoneNumber
+                 cabinet: this.cabinet,
+                 type: this.type,
+                 phoneNumber: this.phoneNumber,
+                 text: this.text,
+                 performanceStatus: this.performanceStatus,
+                 datePerformance: this.datePerformance,
+                 executors: this.executors,
+                 comment: this.comment
+
                  };
 
 //Если мы передали определённый таск, то изменяем его
@@ -73,13 +131,21 @@ Vue.component('task-editor', {
 
                             var index = getIndex(this.tasks, data.id);
                             this.tasks.splice(index, 1, data);
-                            this.text = ''
+
                             this.id = ''
                             this.dateCreation = ''
-                            this.type = ''
+                            this.timeCreation = ''
                             this.owner = ''
+                            this.subdivision = ''
                             this.block = ''
+                            this.cabinet = ''
+                            this.type = ''
                             this.phoneNumber = ''
+                            this.text = ''
+                            this.performanceStatus = ''
+                            this.datePerformance = ''
+                            this.executors = ''
+                            this.comment = ''
                         })
                     )
                 }
@@ -88,19 +154,47 @@ Vue.component('task-editor', {
                    tasksApi.save({}, task).then(result =>
                     result.json().then(data =>{
                         this.tasks.push(data);
-                        this.text = ''
+
                         this.dateCreation = ''
-                        this.type = ''
+                        this.timeCreation = ''
                         this.owner = ''
+                        this.subdivision = ''
                         this.block = ''
+                        this.cabinet = ''
+                        this.type = ''
                         this.phoneNumber = ''
+                        this.text = ''
+                        this.performanceStatus = ''
+                        this.datePerformance = ''
+                        this.executors = ''
+                        this.comment = ''
                     })
                 )
                 }
 
 
+            },
+
+            reset: function(){
+
+            this.id = ''
+            this.dateCreation = ''
+            this.timeCreation = ''
+            this.owner = ''
+            this.subdivision = ''
+            this.block = ''
+            this.cabinet = ''
+            this.type = ''
+            this.phoneNumber = ''
+            this.text = ''
+            this.performanceStatus = ''
+            this.datePerformance = ''
+            this.executors = ''
+            this.comment = ''
+
             }
-         }
+         },
+
 
 
 });
@@ -119,8 +213,10 @@ Vue.component('task-row', {
     '<div>'+
     '<i>(  {{ task.id}}  )</i>'+
     '<span style="position: absolute; left: 0">'+
-            '<input type="button" value="Edit" @click="edit" />'+
+
             '<input type="button" value="X" @click="del" />'+
+            '<input type="button" value="Edit" @click="edit" />'+
+
             '({{task.id}})'+
             '  {{task.text}}  '+
             '  {{task.dateCreation}}  '+
