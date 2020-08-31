@@ -1,7 +1,9 @@
 package com.msun.TasksDatabase.controller;
 
+import com.msun.TasksDatabase.TasksDatabaseApplication;
 import com.msun.TasksDatabase.model.Task;
 import com.msun.TasksDatabase.repo.RepoTasks;
+import com.msun.telegramBot.bot.Bot;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +36,14 @@ public class ControllerTasks {
 
     @PostMapping
     public Task create(@RequestBody Task task){
+        sendBotMessage("Created new task!\n"+
+                "New id: "+task.getId()+"\n"+
+                "Problem: "+task.getText()+"\n"+
+                "Block: "+task.getBlock()+"\n"+
+                "Client: "+task.getOwner()+"\n"+
+                "Phone number: "+task.getPhoneNumber()+"\n"+
+                "\n"
+        );
         return repoTasks.save(task);
     }
 
@@ -42,6 +52,7 @@ public class ControllerTasks {
             @PathVariable("id") Task taskFromDB,
             @RequestBody Task task
     ){
+        sendBotMessage("Updated task. Id("+taskFromDB.getId()+").");
         BeanUtils.copyProperties(task, taskFromDB, "id");
         return repoTasks.save(taskFromDB);
     }
@@ -49,8 +60,13 @@ public class ControllerTasks {
 
     @DeleteMapping("{id}")
     public void delete(@PathVariable("id")Task task){
+        sendBotMessage("Deleted task. Id("+task.getId()+").");
         repoTasks.delete(task);
     }
 
 
+    private void sendBotMessage(String message){
+        Bot bot = TasksDatabaseApplication.bot;
+        bot.sendMsg(bot.getDeployChatId(), message);
+    }
 }

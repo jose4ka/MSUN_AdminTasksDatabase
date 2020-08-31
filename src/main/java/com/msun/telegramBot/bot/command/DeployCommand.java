@@ -1,0 +1,14 @@
+package com.msun.telegramBot.bot.command;
+
+import com.msun.telegramBot.bot.Bot;
+import com.msun.telegramBot.bot.Command;
+import org.telegram.telegrambots.meta.api.objects.Message;
+
+public class DeployCommand extends Command {
+
+    @Override
+    public void execute(Bot bot, Message message) {
+        bot.setDeployChatId(message.getChatId().toString());
+        bot.sendMsg(message.getChatId().toString(), "Deployed at: "+bot.getDeployChatId());
+    }
+}
